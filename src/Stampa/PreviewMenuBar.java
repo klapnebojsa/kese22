@@ -21,7 +21,7 @@ import javax.swing.border.SoftBevelBorder;
  *
  * @author Nebojsa
  */
-public class StampaMenuBar extends JPanel{
+public class PreviewMenuBar extends JPanel{
     boolean prviPut;
     FormPrintPreview formPrintPreview;
     public JLabel tekucaStrana;
@@ -34,7 +34,7 @@ public class StampaMenuBar extends JPanel{
         printButton
     } 
     
-    public StampaMenuBar(boolean prviPut, FormPrintPreview formPrintPreview){
+    public PreviewMenuBar(boolean prviPut, FormPrintPreview formPrintPreview){
        this.prviPut = prviPut;
        this.formPrintPreview = formPrintPreview;
     }

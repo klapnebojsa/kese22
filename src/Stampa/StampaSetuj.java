@@ -60,5 +60,4 @@ public class StampaSetuj {
 
         pj.setPrintable(null, pj.defaultPage(pageFormat));          
     }
-    //kkkkkkkkkkkk
 }

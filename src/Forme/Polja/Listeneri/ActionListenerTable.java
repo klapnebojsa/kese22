@@ -24,14 +24,11 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
 /**
  *
  * @author Nebojsa
  */
 public class ActionListenerTable {
-
     FormForme koZove;
     PoljaEnabDisab poljaEnabDisab;
     boolean izbrisano;
@@ -45,7 +42,6 @@ public class ActionListenerTable {
     }
 
     public void keyPressed(KeyEvent e, BrokerDAO brokerDAO, int[] kljucevi, java.awt.Frame KoZove, int[] poljaDisabled) throws SQLException, ParseException, Exception {
-
         FunkcijskiTasteri ft = new FunkcijskiTasteri();
         PopUp popUp = null;
         
@@ -53,8 +49,7 @@ public class ActionListenerTable {
         
         //---------------- F1 NOVI -------------------------------------------------------------------- 
         oL.proveriNoviListener();
-        if (e.getKeyCode() == ft.getFtNovi() && !oL.getOgranicenja()) {                    // F1-Novi
-            //int selectedRow =table.getSelectedRow();            
+        if (e.getKeyCode() == ft.getFtNovi() && !oL.getOgranicenja()) {                    // F1-Novi         
             poljaIzTabele.setKojiUpis("Novi");
 
             poljaEnabDisab = new PoljaEnabDisab(mt1, poljaIzTabele);
@@ -62,29 +57,21 @@ public class ActionListenerTable {
             poljaEnabDisab.TableDisabled();
             PoljaIzTabeleIsprazni poljaIzTabeleIsprazni = new PoljaIzTabeleIsprazni(mt1, poljaIzTabele);
             poljaIzTabeleIsprazni.Isprazni();
-            try {
-                poljaEnabDisab.SifraAIDisabled(kljucevi);
-            } catch (SQLException ex) {
-                Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            try {poljaEnabDisab.SifraAIDisabled(kljucevi);
+            } catch (SQLException ex) {Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);}
             poljaEnabDisab.PoljeRacunDisabled(poljaDisabled);           
         }
 
         //---------------- F2 IZMENI --------------------------------------------------------------------
         oL.proveriIzmenaListener();        
-        if (e.getKeyCode() == ft.getFtIspravi() && !oL.getOgranicenja()) {                 // F2-Izmeni
-
-            //int selectedRow =table.getSelectedRow();            
+        if (e.getKeyCode() == ft.getFtIspravi() && !oL.getOgranicenja()) {                 // F2-Izmeni          
             poljaIzTabele.setKojiUpis("Izmeni");
 
             poljaEnabDisab = new PoljaEnabDisab(mt1, poljaIzTabele);
             poljaEnabDisab.PoljaEnabled();
             poljaEnabDisab.TableDisabled();
-            try {
-                poljaEnabDisab.SifraDisabled(kljucevi);
-            } catch (SQLException ex) {
-                Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            try {poljaEnabDisab.SifraDisabled(kljucevi);
+            } catch (SQLException ex) {Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);}
 
             poljaEnabDisab.PoljeRacunDisabled(poljaDisabled);
         }
@@ -92,7 +79,6 @@ public class ActionListenerTable {
         //---------------- F5 STAMPA --------------------------------------------------------------------
         oL.proveriStampaListener();
         if (e.getKeyCode() == ft.getFtStampa() && !oL.getOgranicenja()) {                 // F5-Stampa
-      
             Pripremi pripremi = new Pripremi(mt1, koZove);
             pripremi.StampuTabele();
         }
@@ -100,22 +86,16 @@ public class ActionListenerTable {
         //---------------- F12 MARGINE --------------------------------------------------------------------
         oL.proveriBrisiListener();
         if (e.getKeyCode() == ft.getFtMargine() && !oL.getOgranicenja()) {                 // F12-Margine
-
             FormForme f = null;
             AbstractDAO klasa;
             klasa = new Margine();
             try {
                 BrokerDAO brokerDAOPret = koZove.getBrokerDAO();
-                //BrokerDAO brokerDAO = new koZove.
                 f = new FormForme(koZove, "Margine Za Stampu - " + koZove.getTitle(), 1, "Margine");
                 f.k = klasa;
                 f.setBrokerDAOPret(brokerDAOPret);
                 f.main();
-            } catch (SQLException ex) {
-                Logger.getLogger(FormGlavna.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
-                Logger.getLogger(FormGlavna.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } catch (SQLException | ParseException ex) {Logger.getLogger(FormGlavna.class.getName()).log(Level.SEVERE, null, ex);}
         }
         
         //---------------- Del IZBRISI -------------------------------------------------------------------- 
@@ -131,24 +111,16 @@ public class ActionListenerTable {
                 if (setuj.SetujPodatke(podaciZaUpis, poljaIzTabele.getMetaData(), true));
                 Brisi brisi = new Brisi(brokerDAO);
                 izbrisano = false;
-                try {
-                    if (brisi.BrisiPostojeci()) {
-                        izbrisano = true;
-                    }
-                } catch (Exception ex) {
-                    Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                try { if (brisi.BrisiPostojeci()) izbrisano = true;
+                } catch (Exception ex) {Logger.getLogger(MojaTabela.class.getName()).log(Level.SEVERE, null, ex);}
                 if (izbrisano) {
                     int u = mt1.getModel().getSelectRow();
                     mt1.getData().remove(u);
                     mt1.getModel().fireTableRowsDeleted(u, u);
                     //Focus
                     int max = mt1.getModel().getRowCount();
-                    if (u <= max - 1) {
-                        mt1.getModel().selectRow(u, u);
-                    } else {
-                        mt1.getModel().selectRow(u - 1, u - 1);
-                    }
+                    if (u <= max - 1) {mt1.getModel().selectRow(u, u);
+                    } else {mt1.getModel().selectRow(u - 1, u - 1);}
                     mt1.getTable().requestFocus();
 
                     popUp = new PopUp(KoZove, "Uspesno Brisanje!");

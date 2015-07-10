@@ -14,7 +14,7 @@ import Forme.Konstante.Mere;
 import Forme.Tabele.MojaTabela;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
 import Stampa.Prikazi;
-import Stampa.StampaMenuBar;
+import Stampa.PreviewMenuBar;
 import Stampa.StampaSetuj;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -43,7 +43,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
     PageFormat pageFormat;
     List mojeMargine;
     Prikazi prikazi;
-    StampaMenuBar stampaMenuBar;
+    PreviewMenuBar stampaMenuBar;
     PrinterJob pj;
     
     public FormPrintPreview (MojaTabela mt1, FormForme koZove, File f){
@@ -65,7 +65,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         
         //Button u vrhu strane - Stampa, prethodni, sledeci
-        stampaMenuBar = new StampaMenuBar(true, this);
+        stampaMenuBar = new PreviewMenuBar(true, this);
         add(stampaMenuBar, BorderLayout.NORTH);
         //add(new StampaMenuBar(true, this), BorderLayout.NORTH);
         

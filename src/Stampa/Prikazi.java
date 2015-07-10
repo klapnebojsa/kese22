@@ -7,6 +7,8 @@ package Stampa;
 
 import Forme.FormPrintPreview;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
+import Stampa.Podaci.Konstante;
+import Stampa.Podaci.PoljeZaStampu;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,15 +34,23 @@ import javax.swing.JComponent;
 public class Prikazi extends JComponent implements Printable { 
     double p = 1;
     private int trenutniRbrStrane;
+    private PoljeZaStampu poljeZaStampu;
     private Vector lineVector;
     private Vector pageVector;
-
+    
     private Font font;
     private int fontSize;
     private Dimension preferredSize;
+    
+    private Dimension pocetakPage;
+    private double sirinaPage;
+    private double visinaPage;
+    
     PageFormat pageFormat;
     FormPrintPreview formPrintPreview;
     boolean jesteStampa;
+    
+    PreviewPrint previewPrint;
 
     public Prikazi(File file, PageFormat pageFormat, FormPrintPreview formPrintPreview) throws IOException {
         this.pageFormat=pageFormat;     
@@ -48,105 +58,85 @@ public class Prikazi extends JComponent implements Printable {
         double r = 12 * p;        
         fontSize = (int) r;
         font = new Font("Serif", Font.PLAIN, fontSize);
-        BufferedReader in = new BufferedReader(new FileReader(file));
+
         String line;
         lineVector = new Vector();
-        while ((line = in.readLine()) != null) lineVector.addElement(line);
+        BufferedReader in = new BufferedReader(new FileReader(file));
+        while ((line = in.readLine()) != null) {
+            PoljeZaStampu poljeZaStampu = new PoljeZaStampu();
+            //OVDE SETOVATI I OSTALE PARAMETRE MARGINE, VELICINU FONTA ...
+            poljeZaStampu.setLeftLine(true);            
+            poljeZaStampu.setDownLine(true);
+            poljeZaStampu.setRightLine(true);
+            poljeZaStampu.setTopLine(true);
+            
+            poljeZaStampu.setVrednost(line);
+            lineVector.addElement(poljeZaStampu);
+        }               
         in.close();
+        
         pageInit(pageFormat);
         formPrintPreview.showTitle(this);
       
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                double delta = 0.1f * e.getPreciseWheelRotation();
-                p += delta;
-                //max i min preview
-                p=(p<0.8)? 0.8:p;
-                p=(p>10)? 10:p;
+                Konstante konstante = new Konstante();
+                p = konstante.MouseStep(e, p);
                 revalidate();
-                repaint();
+                repaint();  
             }
         });
     }
 
     public void pageInit(PageFormat pageFormat) { 
         trenutniRbrStrane = 0;
+        float y = fontSize;        
         pageVector = new Vector();
-        float y = fontSize;
-        Vector page = new Vector();
+        Vector <PoljeZaStampu> pageXX = new Vector();
         for (int i = 0; i < lineVector.size(); i++) {
-            String line = (String) lineVector.elementAt(i);
-            page.addElement(line);
+            PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
+            pageXX.addElement(line);
             y += fontSize;
             //Kontrola kada je nova strana
             if (y + fontSize * 2 > pageFormat.getImageableHeight()) {
                 y = 0;
-                pageVector.addElement(page);
-                page = new Vector();
+                pageVector.addElement(pageXX);
+                pageXX = new Vector();
             }
         }
-        if (page.size() > 0) pageVector.addElement(page);
+        if (pageXX.size() > 0) pageVector.addElement(pageXX);        
+        
         preferredSize = new Dimension((int) pageFormat.getImageableWidth(), (int) pageFormat.getImageableHeight());
         revalidate();
         repaint();
     }
+
     public void paintComponent(Graphics g){
-        if (getJesteStampa()){previewStampac(g);
-        }else{                previewEkran(g);}
-    }
-    
-    //Pregled EKRAN
-    public void previewEkran(Graphics g) {
-        double rF = 12 * p + 0.5;        
-        fontSize = (int) rF;
-        font = new Font("Serif", Font.PLAIN, fontSize);
-        RezolucijaEkrana re = new RezolucijaEkrana();
-        Dimension fullScr = re.FullScreen();
-        double pX = preferredSize.width*p;  
-        int xC = (fullScr.width - (int)pX) / 2;
-        double pY = preferredSize.height*p*(1+(p-1)*0.8);
-        int yC = (fullScr.height - (int)pY) / 2;
-        yC = 0;
-        Graphics2D g2D = (Graphics2D) g;
-        java.awt.geom.Rectangle2D r = new java.awt.geom.Rectangle2D.Float(xC, yC,(int)pX, (int)pY);
-        g2D.setPaint(Color.white);
-        g2D.fill(r);
-        Vector page = (Vector) pageVector.elementAt(trenutniRbrStrane);
+        double koefUvecanja;
+        pocetakPage = new Dimension();
+        if (getJesteStampa()){
+            setSirinaPage(preferredSize.width);
+            pocetakPage.width = 0;
+            pocetakPage.height = 0;
+            setVisinaPage(preferredSize.height);
+            koefUvecanja=1;
+        }else{
+            RezolucijaEkrana re = new RezolucijaEkrana();
+            Dimension fullScr = re.FullScreen();
 
-        g2D.setFont(font);
-        g2D.setPaint(Color.black);
-        float x = 0;
-        float y = fontSize;
-        for (int i = 0; i < page.size(); i++) {
-          String line = (String) page.elementAt(i);
-          if (line.length() > 0)
-            pX = x * p;
-            pY = y * p;          
-            g2D.drawString(line, (int)pX + xC, (int)pY + yC);
-          y += fontSize;
+            setSirinaPage(preferredSize.width*p);
+            pocetakPage.width = (fullScr.width - (int)getSirinaPage()) / 2;
+            pocetakPage.height = 0;
+            setVisinaPage(preferredSize.height*p*(1+(p-1)*0.8));
+            koefUvecanja=p;
         }
-    }
-    //Stampa STAMPAC
-    public void previewStampac(Graphics g) {   
-      Graphics2D g2D = (Graphics2D) g;
-      java.awt.geom.Rectangle2D r = new java.awt.geom.Rectangle2D.Float(0, 0,
-          preferredSize.width, preferredSize.height);
-      g2D.setPaint(Color.white);
-      g2D.fill(r);
-      Vector page = (Vector) pageVector.elementAt(trenutniRbrStrane);
-
-      g2D.setFont(font);
-      g2D.setPaint(Color.black);
-      float x = 0;
-      float y = fontSize;
-      for (int i = 0; i < page.size(); i++) {
-        String line = (String) page.elementAt(i);
-        if (line.length() > 0)
-          g2D.drawString(line, (int) x, (int) y);
-        y += fontSize;
-      }
-    }
+        fontSize = (int) (12 * koefUvecanja + 0.5);
+        setFont(new Font("Serif", Font.PLAIN, fontSize));
+        
+        previewPrint = new PreviewPrint();
+        previewPrint.Prikazi(this, koefUvecanja, pageVector, g);          
+    }    
     
     public int print(Graphics g, PageFormat pageFormat, int rbrStrane) {
         if (rbrStrane >= pageVector.size()) return NO_SUCH_PAGE;
@@ -158,7 +148,35 @@ public class Prikazi extends JComponent implements Printable {
         trenutniRbrStrane = savedPage;
         return PAGE_EXISTS;
     }
-  
+    
+    public void setPocetakPage(Dimension pocetakPage){
+        this.pocetakPage = pocetakPage;
+    }
+    public Dimension getPocetakPage(){
+        return pocetakPage;
+    }
+
+    public void setSirinaPage(double sirinaPage){
+        this.sirinaPage = sirinaPage;
+    }
+    public double getSirinaPage(){
+        return sirinaPage;
+    }
+    
+    public void setVisinaPage(double visinaPage){
+        this.visinaPage = visinaPage;
+    }
+    public double getVisinaPage(){
+        return visinaPage;
+    }
+    
+    public void setFont(Font font){
+        this.font = font;
+    }
+    public Font getFont(){
+        return font;
+    } 
+    
     public Dimension getPreferredSize() {
       return preferredSize;
     }
