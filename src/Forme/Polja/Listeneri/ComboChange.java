@@ -10,6 +10,7 @@ import Forme.Polja.Prikazi.PoljaIzTabeleDefinicija;
 import Forme.Polja.Prikazi.PoljaIzTabeleNapuni;
 import Forme.PopUpovi.TablePopUp;
 import Forme.Tabele.MojaTabela;
+import Sistem.OsnovneDefinicije.RezolucijaEkrana;
 import Stampa.PreviewMenuBar;
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -46,13 +47,16 @@ public class ComboChange implements ItemListener {
                 vrednost = vrednost.toString().replace(" %", "");
                 previewMenuBar.formPrintPreview.prikazi.p = Double.parseDouble(vrednost.toString()) / 100;                
             }catch(Exception e){
+                RezolucijaEkrana re = new RezolucijaEkrana();
+                Dimension fullScr = re.FullScreen();
+                
                 Dimension prefSize = previewMenuBar.formPrintPreview.prikazi.getPreferredSize();
                 switch (vrednost.toString()){
                         case "page Width":
-                            previewMenuBar.formPrintPreview.prikazi.p = 1920. / prefSize.width;
+                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.width / prefSize.width;
                             break;
                         case "page Height":
-                            previewMenuBar.formPrintPreview.prikazi.p = 1080. / prefSize.height;                            
+                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.height / prefSize.height;                            
                             break;
                 }
             }
