@@ -6,13 +6,26 @@
 package Stampa;
 
 import Forme.FormPrintPreview;
+import Forme.Konstante.Boje;
+import Forme.Napuni.ComboBoxovi.NapuniCombo;
+import Forme.Polja.Listeneri.ComboChange;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
@@ -21,10 +34,13 @@ import javax.swing.border.SoftBevelBorder;
  *
  * @author Nebojsa
  */
-public class PreviewMenuBar extends JPanel{
+public class PreviewMenuBar extends JPanel {
     boolean prviPut;
-    FormPrintPreview formPrintPreview;
+    public FormPrintPreview formPrintPreview;
     public JLabel tekucaStrana;
+    public JLabel tekuceUvecanje;
+    JComboBox procWidth;
+
     private enum Actions {
         pageSetupButton,
         firstButton,
@@ -98,6 +114,36 @@ public class PreviewMenuBar extends JPanel{
             prazno.setPreferredSize(d);            
             add(prazno);
             
+            tekuceUvecanje = new JLabel("100 %");
+            tekuceUvecanje.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
+            tekuceUvecanje.setFont(new Font(tekuceUvecanje.getName(), Font.PLAIN, 12));
+            tekucaStrana.setOpaque(true);
+            d1 = new Dimension();
+            d1.setSize(tekuceUvecanje.getPreferredSize().width+20, tekuceUvecanje.getPreferredSize().height);
+            tekuceUvecanje.setPreferredSize(d1);
+            tekuceUvecanje.setHorizontalAlignment(SwingConstants.CENTER);
+            tekuceUvecanje.setForeground(Color.BLACK);
+            add(tekuceUvecanje);
+            
+            procWidth = new JComboBox();
+            ((JLabel)procWidth.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+            procWidth.setEditable(false);
+            NapuniCombo napuniCombo = new NapuniCombo();
+            String elProc = napuniCombo.procPreviewWidth();
+            try {
+                String[] elementi = elProc.split("@@");
+                for (int i = 0; i < elementi.length; i++) procWidth.addItem(elementi[i]);
+            } catch (Exception e) {} 
+            //Change listener za ComboBox
+            ComboChange comboChange = new ComboChange(this);            
+            procWidth.addItemListener(comboChange);
+            
+            add(procWidth);
+            
+            prazno = new JLabel(); 
+            prazno.setPreferredSize(d);            
+            add(prazno);
+                        
             JButton printButton = new JButton("Print");
             printButton.setFont(font);
             printButton.setPreferredSize(pageSetupButton.getPreferredSize());

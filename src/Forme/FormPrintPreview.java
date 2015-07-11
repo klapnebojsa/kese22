@@ -5,12 +5,6 @@
  */
 package Forme;
 
-import Class.Apstraktne.AbstractDAO;
-import Class.DAO.BrokerDAO;
-import Class.KlaseBaze.Margine;
-import Class.Povezivanje.Procitaj;
-import Class.Povezivanje.Setuj;
-import Forme.Konstante.Mere;
 import Forme.Tabele.MojaTabela;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
 import Stampa.PrikaziPreview;
@@ -18,11 +12,9 @@ import Stampa.PreviewMenuBar;
 import Stampa.StampaSetuj;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -42,8 +34,8 @@ public class FormPrintPreview extends JFrame implements ActionListener{
     File f;
     PageFormat pageFormat;
     List mojeMargine;
-    PrikaziPreview prikazi;
-    PreviewMenuBar stampaMenuBar;
+    public PrikaziPreview prikazi;
+    public PreviewMenuBar stampaMenuBar;
     PrinterJob pj;
     
     public FormPrintPreview (MojaTabela mt1, FormForme koZove, File f){
@@ -64,11 +56,6 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         setSize(fullScr);
         setLocationRelativeTo(null);
         
-        //Button u vrhu strane - Stampa, prethodni, sledeci
-        stampaMenuBar = new PreviewMenuBar(true, this);
-        add(stampaMenuBar, BorderLayout.NORTH);
-        //add(new StampaMenuBar(true, this), BorderLayout.NORTH);
-        
         //Ovde ucitati format iz baze
         pj = PrinterJob.getPrinterJob();
         pageFormat = pj.defaultPage();
@@ -80,6 +67,10 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         //Preview Strane
         prikazi = new PrikaziPreview(f, pageFormat, this);
         add(new JScrollPane(prikazi), BorderLayout.CENTER);
+        
+        //Button u vrhu strane - Stampa, prethodni, sledeci
+        stampaMenuBar = new PreviewMenuBar(true, this);
+        add(stampaMenuBar, BorderLayout.NORTH);        
         
         setVisible(true);       
         
@@ -100,6 +91,10 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         }catch(Exception e){} 
     }
     
+    public void preracunajSirinu(String vrednost){
+        
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String a = e.getActionCommand();
@@ -107,7 +102,6 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         switch (a){
             //Izbor Formata Strane            
             case "pageSetupButton":
-
                 pageFormat = pj.pageDialog(pageFormat);
                 /*double ww = pageFormat.getWidth();
                 double hh = pageFormat.getHeight();*/
@@ -133,7 +127,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
                     } catch (PrinterException e1) {}
                     prikazi.setJestStampa(false);
                 }
-                break;
+                break;                 
             default:
                 break;
         }

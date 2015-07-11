@@ -32,7 +32,7 @@ import javax.swing.JComponent;
  * @author Nebojsa
  */
 public class PrikaziPreview extends JComponent implements Printable { 
-    double p = 1;
+    public double p = 1;
     private int trenutniRbrStrane;
     private PoljeZaStampu poljeZaStampu;
     private Vector lineVector;
@@ -53,7 +53,7 @@ public class PrikaziPreview extends JComponent implements Printable {
     
     PreviewPrint previewPrint;
 
-    public PrikaziPreview(File file, PageFormat pageFormat, FormPrintPreview formPrintPreview) throws IOException {
+    public PrikaziPreview(File file, PageFormat pageFormat, final FormPrintPreview formPrintPreview) throws IOException {
         this.pageFormat=pageFormat;     
         this.formPrintPreview = formPrintPreview;
         double r = 12 * p;        
@@ -84,6 +84,11 @@ public class PrikaziPreview extends JComponent implements Printable {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 Konstante konstante = new Konstante();
                 p = konstante.MouseStep(e, p);
+                
+                int kk = (int)(100 * p);
+                try{formPrintPreview.stampaMenuBar.tekuceUvecanje.setText(String.valueOf(kk) + " %");
+                }catch(Exception e1){} 
+                
                 revalidate();
                 repaint();  
             }

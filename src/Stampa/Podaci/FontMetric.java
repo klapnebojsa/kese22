@@ -23,12 +23,11 @@ import java.awt.geom.AffineTransform;
 public class FontMetric extends Frame {
     double visinaFonta;
     Font font; 
-    private String ms;
 
     public FontMetric(Font font) {
         String text = "ŽĐŽĐjjzzyy{}";
-        AffineTransform affinetransform = new AffineTransform();     
-        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
+        AffineTransform affineTransform = new AffineTransform();     
+        FontRenderContext frc = new FontRenderContext(affineTransform,true,true);     
         //int textwidth = (int)(font.getStringBounds(text, frc).getWidth());
 
         int textheight = (int)(font.getStringBounds(text, frc).getHeight());

@@ -58,6 +58,11 @@ public class NapuniCombo {
     public String Orijentacija() {
         String a = "Uspravno@@Polozeno";
         return a;
-    }    
+    }
+    
+    public String procPreviewWidth() {
+        String a = "80 %@@100 %@@150 %@@200 %@@300 %@@400 %@@500 %@@page Width@@page Height";
+        return a;
+    }
     
 }

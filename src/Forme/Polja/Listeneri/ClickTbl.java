@@ -63,9 +63,6 @@ public class ClickTbl{
                     tablePopUp.rightClick();
                 }
             }
-        });    
-            
-       
+        });          
     }
-
 }
