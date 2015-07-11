@@ -16,13 +16,8 @@ import javax.swing.JComponent;
  * @author Nebojsa
  */
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
-import java.text.AttributedString;
-import java.util.Hashtable;
   
  
 public class FontMetric extends Frame {
@@ -31,7 +26,7 @@ public class FontMetric extends Frame {
     private String ms;
 
     public FontMetric(Font font) {
-        String text = "ŽĐŽĐjjzzyy{},~`223#@$!~%&^^&^&Z**()(_)_+_+_{}";
+        String text = "ŽĐŽĐjjzzyy{}";
         AffineTransform affinetransform = new AffineTransform();     
         FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
         //int textwidth = (int)(font.getStringBounds(text, frc).getWidth());
@@ -40,7 +35,6 @@ public class FontMetric extends Frame {
         setVisinaFonta(textheight);        
     }
 
-    
     public void setVisinaFonta(double visinaFonta){
         this.visinaFonta = visinaFonta;
     }
