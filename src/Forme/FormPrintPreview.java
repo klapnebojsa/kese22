@@ -13,7 +13,7 @@ import Class.Povezivanje.Setuj;
 import Forme.Konstante.Mere;
 import Forme.Tabele.MojaTabela;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
-import Stampa.Prikazi;
+import Stampa.PrikaziPreview;
 import Stampa.PreviewMenuBar;
 import Stampa.StampaSetuj;
 import java.awt.BorderLayout;
@@ -42,7 +42,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
     File f;
     PageFormat pageFormat;
     List mojeMargine;
-    Prikazi prikazi;
+    PrikaziPreview prikazi;
     PreviewMenuBar stampaMenuBar;
     PrinterJob pj;
     
@@ -78,7 +78,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         stampaSetuj.SetujPageSetup(mojeMargine, pageFormat, pj, this, koZove);
         
         //Preview Strane
-        prikazi = new Prikazi(f, pageFormat, this);
+        prikazi = new PrikaziPreview(f, pageFormat, this);
         add(new JScrollPane(prikazi), BorderLayout.CENTER);
         
         setVisible(true);       
@@ -92,7 +92,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         });
     }
     
-    public void showTitle(Prikazi prikazi) {
+    public void showTitle(PrikaziPreview prikazi) {
         int currentPage = prikazi.getTrenutnatPage() + 1;
         int numPages = prikazi.getNumPages();
         setTitle("Print Preview - " + koZove.getOpisForme() +  " strana " + currentPage + " od " + numPages);

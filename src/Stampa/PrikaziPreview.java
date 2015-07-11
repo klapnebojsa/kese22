@@ -7,15 +7,21 @@ package Stampa;
 
 import Forme.FormPrintPreview;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
+import Stampa.Podaci.FontMetric;
 import Stampa.Podaci.Konstante;
 import Stampa.Podaci.PoljeZaStampu;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseWheelEvent;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
+import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import static java.awt.print.Printable.NO_SUCH_PAGE;
@@ -31,7 +37,7 @@ import javax.swing.JComponent;
  *
  * @author Nebojsa
  */
-public class Prikazi extends JComponent implements Printable { 
+public class PrikaziPreview extends JComponent implements Printable { 
     double p = 1;
     private int trenutniRbrStrane;
     private PoljeZaStampu poljeZaStampu;
@@ -49,10 +55,11 @@ public class Prikazi extends JComponent implements Printable {
     PageFormat pageFormat;
     FormPrintPreview formPrintPreview;
     boolean jesteStampa;
+    private double visinaNovo;
     
     PreviewPrint previewPrint;
 
-    public Prikazi(File file, PageFormat pageFormat, FormPrintPreview formPrintPreview) throws IOException {
+    public PrikaziPreview(File file, PageFormat pageFormat, FormPrintPreview formPrintPreview) throws IOException {
         this.pageFormat=pageFormat;     
         this.formPrintPreview = formPrintPreview;
         double r = 12 * p;        
@@ -88,18 +95,21 @@ public class Prikazi extends JComponent implements Printable {
             }
         });
     }
-
     public void pageInit(PageFormat pageFormat) { 
         trenutniRbrStrane = 0;
-        float y = fontSize;        
+        float y = 0;        
         pageVector = new Vector();
         Vector <PoljeZaStampu> pageXX = new Vector();
         for (int i = 0; i < lineVector.size(); i++) {
             PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
             pageXX.addElement(line);
-            y += fontSize;
+            
+            FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, fontSize));
+            double visina = fontMetric.getVisinaFonta();
+            
+            y += visina;
             //Kontrola kada je nova strana
-            if (y + fontSize * 2 > pageFormat.getImageableHeight()) {
+            if (y + visina * 2 > pageFormat.getImageableHeight()) {
                 y = 0;
                 pageVector.addElement(pageXX);
                 pageXX = new Vector();
@@ -113,29 +123,44 @@ public class Prikazi extends JComponent implements Printable {
     }
 
     public void paintComponent(Graphics g){
-        double koefUvecanja;
         pocetakPage = new Dimension();
+       
+        g.setFont(new Font("Serif", Font.PLAIN, fontSize));        
+        /*FontMetrics fm = g.getFontMetrics();
+        double visinaPrethodno = fm.getMaxAscent() + fm.getMaxDecent();*/
+        
+        FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, 12));
+        double visinaPrethodno = fontMetric.getVisinaFonta();
+            
         if (getJesteStampa()){
+            //STAMPA
             setSirinaPage(preferredSize.width);
             pocetakPage.width = 0;
             pocetakPage.height = 0;
             setVisinaPage(preferredSize.height);
-            koefUvecanja=1;
+            fontSize = 12;  
         }else{
+            //PREVIEW
             RezolucijaEkrana re = new RezolucijaEkrana();
             Dimension fullScr = re.FullScreen();
-
+            fontSize = (int) (12 * p + 0.5); 
+            
+            g.setFont(new Font("Serif", Font.PLAIN, fontSize));        
+            /*fm = g.getFontMetrics();
+            visinaNovo = fm.getMaxAscent() + fm.getMaxDecent();*/
+            
+            fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, fontSize));
+            visinaNovo = fontMetric.getVisinaFonta();
+            
+            //Odredjivanje koefcijenta povecanja/smanjenja strane u odnosu na visinu reda teksta
+            double p = visinaNovo / visinaPrethodno;
             setSirinaPage(preferredSize.width*p);
             pocetakPage.width = (fullScr.width - (int)getSirinaPage()) / 2;
             pocetakPage.height = 0;
-            setVisinaPage(preferredSize.height*p*(1+(p-1)*0.8));
-            koefUvecanja=p;
+            setVisinaPage(preferredSize.height*p);
         }
-        fontSize = (int) (12 * koefUvecanja + 0.5);
-        setFont(new Font("Serif", Font.PLAIN, fontSize));
-        
         previewPrint = new PreviewPrint();
-        previewPrint.Prikazi(this, koefUvecanja, pageVector, g);          
+        previewPrint.Prikazi(this, pageVector, g);          
     }    
     
     public int print(Graphics g, PageFormat pageFormat, int rbrStrane) {

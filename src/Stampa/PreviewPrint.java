@@ -6,17 +6,12 @@
 package Stampa;
 
 import Stampa.Podaci.PoljeZaStampu;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import static java.awt.SystemColor.text;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
 import java.util.Vector;
 
 /**
@@ -28,7 +23,7 @@ public class PreviewPrint {
     int visinaFonta;
     Font font;
     Graphics2D g2D;
-    public void Prikazi(Prikazi prikazi, double p,  Vector pageVector, Graphics g){
+    public void Prikazi(PrikaziPreview prikazi,  Vector pageVector, Graphics g){
         font = prikazi.getFont();        
 
         FontMetrics fm = g.getFontMetrics();
@@ -51,8 +46,8 @@ public class PreviewPrint {
         for (int i = 0; i < page.size(); i++) {
             String line = (String) page.elementAt(i).getVrednost();
             if (line.length() > 0){
-                double pX = x * p;
-                double pY = y * p;          
+                double pX = x;
+                double pY = y;          
                 g2D.drawString(line, (int)pX + pocetakPage.width, (int)pY + pocetakPage.height - fm.getMaxDecent());
                 if (page.elementAt(i).getDownLine()) 
                     g2D.drawLine((int)pX + pocetakPage.width, (int)pY + pocetakPage.height, 
