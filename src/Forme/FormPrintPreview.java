@@ -5,6 +5,7 @@
  */
 package Forme;
 
+import Forme.Konstante.Mere;
 import Forme.Tabele.MojaTabela;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
 import Stampa.PrikaziPreview;
@@ -20,6 +21,8 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -37,6 +40,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
     public PrikaziPreview prikazi;
     public PreviewMenuBar stampaMenuBar;
     PrinterJob pj;
+    public StampaSetuj stampaSetuj;
     
     public FormPrintPreview (MojaTabela mt1, FormForme koZove, File f){
         super();
@@ -52,6 +56,7 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         //rezolucija
         RezolucijaEkrana re = new RezolucijaEkrana();
         Dimension fullScr = re.FullScreen();
+        
         //Velicina Forme (Cela Strana)
         setSize(fullScr);
         setLocationRelativeTo(null);
@@ -61,8 +66,8 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         pageFormat = pj.defaultPage();
 
         //Postavljanje vrednosti Margina u PrinterJob.pageDialog
-        StampaSetuj stampaSetuj = new StampaSetuj();
-        stampaSetuj.SetujPageSetup(mojeMargine, pageFormat, pj, this, koZove);
+        stampaSetuj = new StampaSetuj();
+        stampaSetuj.SetujPageSetup(pageFormat, pj, this, koZove);
         
         //Preview Strane
         prikazi = new PrikaziPreview(f, pageFormat, this);
@@ -102,9 +107,15 @@ public class FormPrintPreview extends JFrame implements ActionListener{
         switch (a){
             //Izbor Formata Strane            
             case "pageSetupButton":
+                Mere mere = new Mere();
+                Double preracun = mere.getMmPageFormat() / 10;
                 pageFormat = pj.pageDialog(pageFormat);
-                /*double ww = pageFormat.getWidth();
-                double hh = pageFormat.getHeight();*/
+                //Setovanje koordinata, stampaca ... - POLJA IZ MARGINA             
+                stampaSetuj.setMLeft((int)(pageFormat.getImageableX() / preracun));
+                stampaSetuj.setMRight((int)((pageFormat.getWidth() - pageFormat.getImageableX() - pageFormat.getImageableWidth() + 0.5) / preracun));                 
+                stampaSetuj.setMTop((int)(pageFormat.getImageableY() / preracun));
+                stampaSetuj.setMDown((int)((pageFormat.getHeight() - pageFormat.getImageableY() - pageFormat.getImageableHeight() + 0.5) / preracun));
+
                 if (prikazi != null) prikazi.pageInit(pageFormat);
                 break;
             case "nextButton":

@@ -23,8 +23,14 @@ import java.util.List;
  * @author Nebojsa
  */
 public class StampaSetuj {
+    int mLeft=25;
+    int mRight=25;
+    int mTop=25;
+    int mDown=25;
+    List mojeMargine;
+    Double preracun;
     
-    public void SetujPageSetup(List mojeMargine, PageFormat pageFormat, PrinterJob pj, FormPrintPreview formPrintPreview, FormForme koZove) throws Exception{
+    public void SetujPageSetup(PageFormat pageFormat, PrinterJob pj, FormPrintPreview formPrintPreview, FormForme koZove) throws Exception{
         
         //Postavljenje Sifre Margina
         Procitaj emp = new Procitaj();
@@ -38,26 +44,54 @@ public class StampaSetuj {
         set.SetujSifruMargina(sifraMargine);
         mojeMargine = emp.ProcitajJedanxx(brokerDAO);
         
-        Double mLeft=null;
-        Double mRight=null;
-        Double mTop=null;
-        Double mDown=null;
-        
+        //Setovanje podataka iz tabele MARGINE
         for(Object category : mojeMargine) {
             List element = (List)category;   
-            mLeft = Double.parseDouble(element.get(1).toString());
-            mRight = Double.parseDouble(element.get(2).toString());            
-            mTop = Double.parseDouble(element.get(3).toString());
-            mDown = Double.parseDouble(element.get(4).toString());                              
+            mLeft = Integer.parseInt(element.get(1).toString());
+            mRight = Integer.parseInt(element.get(2).toString());          
+            mTop = Integer.parseInt(element.get(3).toString());
+            mDown = Integer.parseInt(element.get(4).toString());
+            
+            
         }
         Mere mere = new Mere();
-        Double preracun = mere.getMmPageFormat() / 10;               
+        preracun = mere.getMmPageFormat() / 10;               
         pageFormat = pj.defaultPage();
         Paper paper = pageFormat.getPaper();
         paper.setImageableArea(mLeft*preracun, mTop*preracun, paper.getWidth()-(mRight+mLeft)*preracun, paper.getHeight()-(mDown+mTop)*preracun);
         pageFormat.setPaper(paper);
         formPrintPreview.setPageFormat(pageFormat);
 
-        pj.setPrintable(null, pj.defaultPage(pageFormat));          
+        pj.setPrintable(null, pj.defaultPage(pageFormat));
+    }
+
+    //GET
+    public double getMLeft(){
+        return mLeft*preracun;
+    }
+    public double getMRight(){
+        return mRight*preracun;
+    }
+    public double getMTop(){
+        return mTop*preracun;
+    }
+    public double getMDown(){
+        return mDown*preracun;
+    }
+    
+    //SET IZ FormPrintPreview - kada se promene koordinate
+    //Promena nije trajna vec samo za tu odredjenu stampu
+    //Ostala polja se ne setuju zato sto se ona menjaju u PRINT FORMI i oni se setuju samo pri ucitavanju iz tabele MARGINE (postoji samo get ali ne i set iz drugr klase)
+    public void setMLeft(int mLeft){
+        this.mLeft = mLeft;
+    }
+    public void setMRight(int mRight){
+        this.mRight = mRight;
+    }
+    public void setMTop(int mTop){
+        this.mTop = mTop;
+    }
+    public void setMDown(int mDown){
+        this.mDown = mDown;
     }
 }

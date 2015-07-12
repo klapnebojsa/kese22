@@ -30,9 +30,13 @@ public class PreviewPrint {
         visinaFonta = fm.getMaxAscent() + fm.getMaxDecent();
 
         Dimension pocetakPage = prikazi.getPocetakPage();
-        int visinaPage = (int)prikazi.getVisinaPage();        
-        int sirinaPage = (int)prikazi.getSirinaPage(); 
+
+        int sirinaPage = (int)prikazi.getUkupnoSize().width;         
+        int visinaPage = (int)prikazi.getUkupnoSize().height; 
         
+        /*int sirinaPreffered = (int) prikazi.getPreferredSize().width;
+        int visinaPreffered = (int) prikazi.getPreferredSize().height;*/
+       
         java.awt.geom.Rectangle2D r = new java.awt.geom.Rectangle2D.Float (pocetakPage.width, pocetakPage.height, sirinaPage, visinaPage);        
 
         Vector <PoljeZaStampu> page = (Vector) pageVector.elementAt(prikazi.getTrenutnatPage());
@@ -41,18 +45,20 @@ public class PreviewPrint {
         g2D.setPaint(Color.white);
         g2D.fill(r);        
         g2D.setPaint(Color.black);
-        double x = 0;
-        double y = visinaFonta;
+        double x = prikazi.formPrintPreview.stampaSetuj.getMLeft();
+        double x1 = prikazi.formPrintPreview.stampaSetuj.getMRight();
+        double y = visinaFonta + prikazi.formPrintPreview.stampaSetuj.getMTop();
+        
         for (int i = 0; i < page.size(); i++) {
             String line = (String) page.elementAt(i).getVrednost();
             if (line.length() > 0){
-                double pX = x;
+                double pX = x * prikazi.p;
                 double pY = y;          
                 g2D.drawString(line, (int)pX + pocetakPage.width, (int)pY + pocetakPage.height - fm.getMaxDecent());
                 if (page.elementAt(i).getDownLine()) 
                     g2D.drawLine((int)pX + pocetakPage.width, (int)pY + pocetakPage.height, 
-                                 (int)pX + pocetakPage.width + sirinaPage, (int)pY + pocetakPage.height);
-                y += visinaFonta;                
+                                 (int)pX + pocetakPage.width + (int)(sirinaPage - (x + x1) * prikazi.p), (int)pY + pocetakPage.height);
+                y += visinaFonta;              
             }
         }            
     }

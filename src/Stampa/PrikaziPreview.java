@@ -6,6 +6,7 @@
 package Stampa;
 
 import Forme.FormPrintPreview;
+import Forme.Konstante.Mere;
 import Sistem.OsnovneDefinicije.RezolucijaEkrana;
 import Stampa.Podaci.FontMetric;
 import Stampa.Podaci.Konstante;
@@ -41,6 +42,8 @@ public class PrikaziPreview extends JComponent implements Printable {
     private Font font;
     private int fontSize;
     private Dimension preferredSize;
+    private Dimension ukupnoOsnovno;
+    private Dimension ukupnoSize;
     
     private Dimension pocetakPage;
     private double sirinaPage;
@@ -52,6 +55,7 @@ public class PrikaziPreview extends JComponent implements Printable {
     private double visinaNovo;
     
     PreviewPrint previewPrint;
+    Double preracun;
 
     public PrikaziPreview(File file, PageFormat pageFormat, final FormPrintPreview formPrintPreview) throws IOException {
         this.pageFormat=pageFormat;     
@@ -59,7 +63,10 @@ public class PrikaziPreview extends JComponent implements Printable {
         double r = 12 * p;        
         fontSize = (int) r;
         font = new Font("Serif", Font.PLAIN, fontSize);
-
+        
+        Mere mere = new Mere();
+        preracun = mere.getMmPageFormat() / 10;
+        
         String line;
         lineVector = new Vector();
         BufferedReader in = new BufferedReader(new FileReader(file));
@@ -88,7 +95,7 @@ public class PrikaziPreview extends JComponent implements Printable {
                 int kk = (int)(100 * p);
                 try{formPrintPreview.stampaMenuBar.tekuceUvecanje.setText(String.valueOf(kk) + " %");
                 }catch(Exception e1){} 
-                
+
                 revalidate();
                 repaint();  
             }
@@ -103,11 +110,12 @@ public class PrikaziPreview extends JComponent implements Printable {
             PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
             pageXX.addElement(line);
             
-            FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, fontSize));
+            FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, 12));
             double visina = fontMetric.getVisinaFonta();
             
             y += visina;
             //Kontrola kada je nova strana
+            double gg =  pageFormat.getImageableHeight();
             if (y + visina * 2 > pageFormat.getImageableHeight()) {
                 y = 0;
                 pageVector.addElement(pageXX);
@@ -125,18 +133,19 @@ public class PrikaziPreview extends JComponent implements Printable {
         pocetakPage = new Dimension();
        
         g.setFont(new Font("Serif", Font.PLAIN, fontSize));        
-        /*FontMetrics fm = g.getFontMetrics();
-        double visinaPrethodno = fm.getMaxAscent() + fm.getMaxDecent();*/
-        
+
         FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, 12));
         double visinaPrethodno = fontMetric.getVisinaFonta();
-            
+        
+        sirinaPage = preferredSize.width + formPrintPreview.stampaSetuj.getMLeft() + formPrintPreview.stampaSetuj.getMRight();
+        visinaPage = preferredSize.height + formPrintPreview.stampaSetuj.getMTop() + formPrintPreview.stampaSetuj.getMDown();
+        
+        ukupnoOsnovno = new Dimension((int)sirinaPage, (int)visinaPage);
+        
         if (getJesteStampa()){
             //STAMPA
-            setSirinaPage(preferredSize.width);
             pocetakPage.width = 0;
             pocetakPage.height = 0;
-            setVisinaPage(preferredSize.height);
             fontSize = 12;  
         }else{
             //PREVIEW
@@ -153,11 +162,13 @@ public class PrikaziPreview extends JComponent implements Printable {
             
             //Odredjivanje koefcijenta povecanja/smanjenja strane u odnosu na visinu reda teksta
             double p = visinaNovo / visinaPrethodno;
-            setSirinaPage(preferredSize.width*p);
-            pocetakPage.width = (fullScr.width - (int)getSirinaPage()) / 2;
-            pocetakPage.height = 0;
-            setVisinaPage(preferredSize.height*p);
+            sirinaPage = sirinaPage * p;
+            visinaPage = visinaPage * p;  
+
+            pocetakPage.width = (fullScr.width - (int)sirinaPage) / 2;
+            pocetakPage.height = 20;
         }
+        ukupnoSize = (new Dimension((int)sirinaPage, (int)visinaPage));        
         previewPrint = new PreviewPrint();
         previewPrint.Prikazi(this, pageVector, g);          
     }    
@@ -180,20 +191,6 @@ public class PrikaziPreview extends JComponent implements Printable {
         return pocetakPage;
     }
 
-    public void setSirinaPage(double sirinaPage){
-        this.sirinaPage = sirinaPage;
-    }
-    public double getSirinaPage(){
-        return sirinaPage;
-    }
-    
-    public void setVisinaPage(double visinaPage){
-        this.visinaPage = visinaPage;
-    }
-    public double getVisinaPage(){
-        return visinaPage;
-    }
-    
     public void setFont(Font font){
         this.font = font;
     }
@@ -203,6 +200,12 @@ public class PrikaziPreview extends JComponent implements Printable {
     
     public Dimension getPreferredSize() {
       return preferredSize;
+    }
+    public Dimension getUkupnoOsnovno() {
+      return ukupnoOsnovno;
+    }
+    public Dimension getUkupnoSize() {
+      return ukupnoSize;
     }
 
     public int getTrenutnatPage() {

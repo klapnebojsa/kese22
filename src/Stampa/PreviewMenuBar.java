@@ -39,7 +39,7 @@ public class PreviewMenuBar extends JPanel {
     public FormPrintPreview formPrintPreview;
     public JLabel tekucaStrana;
     public JLabel tekuceUvecanje;
-    JComboBox procWidth;
+    public JComboBox procWidth;
 
     private enum Actions {
         pageSetupButton,

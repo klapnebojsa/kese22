@@ -37,13 +37,13 @@ public class ComboChange implements ItemListener {
                     RezolucijaEkrana re = new RezolucijaEkrana();
                     Dimension fullScr = re.FullScreen();
 
-                    Dimension prefSize = previewMenuBar.formPrintPreview.prikazi.getPreferredSize();
+                    Dimension ukupnoOsnovno = previewMenuBar.formPrintPreview.prikazi.getUkupnoOsnovno();
                     switch (vrednost.toString()){
                         case "page Width":
-                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.width / prefSize.width;
+                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.width / ukupnoOsnovno.width;
                             break;
                         case "page Height":
-                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.height / prefSize.height;                            
+                            previewMenuBar.formPrintPreview.prikazi.p = (double)fullScr.height / ukupnoOsnovno.height;                            
                             break;
                     }
                 }

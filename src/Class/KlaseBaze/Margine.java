@@ -50,17 +50,17 @@ public class Margine extends AbstractDAO implements Serializable {
     private String idMargine;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "Levo")
-    private BigDecimal levo;
+    private Integer levo;
     @Column(name = "Desno")
-    private BigDecimal desno;
+    private Integer desno;
     @Column(name = "Gore")
-    private BigDecimal gore;
+    private Integer gore;
     @Column(name = "Dole")
-    private BigDecimal dole;
+    private Integer dole;
     @Column(name = "MedjX")
-    private BigDecimal medjX;
+    private Integer medjX;
     @Column(name = "MedjY")
-    private BigDecimal medjY;
+    private Integer medjY;
     @Column(name = "VelFonta")
     private Integer velFonta;
     @Column(name = "Font")
@@ -87,51 +87,51 @@ public class Margine extends AbstractDAO implements Serializable {
         this.idMargine = idMargine;
     }
 
-    public BigDecimal getLevo() {
+    public Integer getLevo() {
         return levo;
     }
 
-    public void setLevo(BigDecimal levo) {
+    public void setLevo(Integer levo) {
         this.levo = levo;
     }
 
-    public BigDecimal getDesno() {
+    public Integer getDesno() {
         return desno;
     }
 
-    public void setDesno(BigDecimal desno) {
+    public void setDesno(Integer desno) {
         this.desno = desno;
     }
 
-    public BigDecimal getGore() {
+    public Integer getGore() {
         return gore;
     }
 
-    public void setGore(BigDecimal gore) {
+    public void setGore(Integer gore) {
         this.gore = gore;
     }
 
-    public BigDecimal getDole() {
+    public Integer getDole() {
         return dole;
     }
 
-    public void setDole(BigDecimal dole) {
+    public void setDole(Integer dole) {
         this.dole = dole;
     }
 
-    public BigDecimal getMedjX() {
+    public Integer getMedjX() {
         return medjX;
     }
 
-    public void setMedjX(BigDecimal medjX) {
+    public void setMedjX(Integer medjX) {
         this.medjX = medjX;
     }
 
-    public BigDecimal getMedjY() {
+    public Integer getMedjY() {
         return medjY;
     }
 
-    public void setMedjY(BigDecimal medjY) {
+    public void setMedjY(Integer medjY) {
         this.medjY = medjY;
     }
 
@@ -327,17 +327,17 @@ public class Margine extends AbstractDAO implements Serializable {
 
         pomoc = provere.proveriString(getIdMargine(), OpisiPolja[0]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 0;}}
-        pomoc = provere.proveriBigDecimal(getLevo(), OpisiPolja[1]);
+        pomoc = provere.proveriInteger(getLevo(), OpisiPolja[1]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 1;}}
-        pomoc = provere.proveriBigDecimal(getDesno(), OpisiPolja[2]);
+        pomoc = provere.proveriInteger(getDesno(), OpisiPolja[2]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 2;}}
-        pomoc = provere.proveriBigDecimal(getDole(), OpisiPolja[3]);
+        pomoc = provere.proveriInteger(getDole(), OpisiPolja[3]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 3;}}
-        pomoc = provere.proveriBigDecimal(getGore(), OpisiPolja[4]);
+        pomoc = provere.proveriInteger(getGore(), OpisiPolja[4]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 4;}}
-        pomoc = provere.proveriBigDecimal(getMedjX(), OpisiPolja[5]);
+        pomoc = provere.proveriInteger(getMedjX(), OpisiPolja[5]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 5;}}
-        pomoc = provere.proveriBigDecimal(getMedjY(), OpisiPolja[6]);
+        pomoc = provere.proveriInteger(getMedjY(), OpisiPolja[6]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 6;}}
         pomoc = provere.proveriInteger(getVelFonta(), OpisiPolja[7]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 7;}}
