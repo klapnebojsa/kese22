@@ -19,7 +19,7 @@ public class PoljeZaStampu {
     boolean downLine;
     boolean rightLine;
     boolean topLine;
-    
+
     public void setVrednost(String vrednost){
         this.vrednost = vrednost;
     } 
@@ -60,5 +60,6 @@ public class PoljeZaStampu {
     }
     public boolean getTopLine(){
         return topLine;
-    }    
+    } 
+    
 }
