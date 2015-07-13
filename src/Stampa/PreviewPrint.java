@@ -91,7 +91,7 @@ public class PreviewPrint {
                         break;                        
                 }
 
-                //Linije tabele
+                //Linije tabele 
                 if (page.elementAt(i).getDownLine())  g2D.drawLine(xLf, yDw, xRg, yDw);
                 if (page.elementAt(i).getTopLine())   g2D.drawLine(xLf, yUp, xRg, yUp); 
                 if (page.elementAt(i).getLeftLine())  g2D.drawLine(xLf, yUp, xLf, yDw);
