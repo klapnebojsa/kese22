@@ -13,7 +13,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.util.Vector;
 
@@ -58,6 +60,8 @@ public class PreviewPrint {
         g2D.setPaint(Color.white);
         g2D.fill(r);        
         g2D.setPaint(Color.black);
+        g2D.setFont(font);
+        
         double mLeft = prikazi.formPrintPreview.stampaSetuj.getMLeft();
         double mRight = prikazi.formPrintPreview.stampaSetuj.getMRight();
         double trenutnoY = visinaFonta + prikazi.formPrintPreview.stampaSetuj.getMTop();
