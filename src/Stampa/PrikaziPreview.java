@@ -166,7 +166,7 @@ public class PrikaziPreview extends JComponent implements Printable {
             visinaPage = visinaPage * p;  
 
             pocetakPage.width = (fullScr.width - (int)sirinaPage) / 2;
-            pocetakPage.height = 20;
+            pocetakPage.height = 30;
         }
         ukupnoSize = (new Dimension((int)sirinaPage, (int)visinaPage));        
         previewPrint = new PreviewPrint();
