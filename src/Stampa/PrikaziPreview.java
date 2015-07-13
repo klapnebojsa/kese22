@@ -56,11 +56,12 @@ public class PrikaziPreview extends JComponent implements Printable {
     
     PreviewPrint previewPrint;
     Double preracun;
+    int brKopija;
 
     public PrikaziPreview(File file, PageFormat pageFormat, final FormPrintPreview formPrintPreview) throws IOException {
         this.pageFormat=pageFormat;     
         this.formPrintPreview = formPrintPreview;
-        double r = 12 * p;        
+        double r = (int)formPrintPreview.stampaSetuj.getMVelFonta() * p;        
         fontSize = (int) r;
         font = new Font("Serif", Font.PLAIN, fontSize);
         
@@ -110,7 +111,7 @@ public class PrikaziPreview extends JComponent implements Printable {
             PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
             pageXX.addElement(line);
             
-            FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, 12));
+            FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, (int)formPrintPreview.stampaSetuj.getMVelFonta()));
             double visina = fontMetric.getVisinaFonta();
             
             y += visina;
@@ -134,7 +135,7 @@ public class PrikaziPreview extends JComponent implements Printable {
        
         g.setFont(new Font("Serif", Font.PLAIN, fontSize));        
 
-        FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, 12));
+        FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, (int)formPrintPreview.stampaSetuj.getMVelFonta()));
         double visinaPrethodno = fontMetric.getVisinaFonta();
         
         sirinaPage = preferredSize.width + formPrintPreview.stampaSetuj.getMLeft() + formPrintPreview.stampaSetuj.getMRight();
@@ -146,12 +147,12 @@ public class PrikaziPreview extends JComponent implements Printable {
             //STAMPA
             pocetakPage.width = 0;
             pocetakPage.height = 0;
-            fontSize = 12;  
+            fontSize = (int)formPrintPreview.stampaSetuj.getMVelFonta();  
         }else{
             //PREVIEW
             RezolucijaEkrana re = new RezolucijaEkrana();
             Dimension fullScr = re.FullScreen();
-            fontSize = (int) (12 * p + 0.5); 
+            fontSize = (int) ((int)formPrintPreview.stampaSetuj.getMVelFonta() * p + 0.5); 
             
             g.setFont(new Font("Serif", Font.PLAIN, fontSize));        
             /*fm = g.getFontMetrics();
@@ -167,10 +168,11 @@ public class PrikaziPreview extends JComponent implements Printable {
 
             pocetakPage.width = (fullScr.width - (int)sirinaPage) / 2;
             pocetakPage.height = 30;
+            brKopija=1;
         }
         ukupnoSize = (new Dimension((int)sirinaPage, (int)visinaPage));        
         previewPrint = new PreviewPrint();
-        previewPrint.Prikazi(this, pageVector, g);          
+        previewPrint.Prikazi(this, pageVector, g);            
     }    
     
     public int print(Graphics g, PageFormat pageFormat, int rbrStrane) {
@@ -239,4 +241,7 @@ public class PrikaziPreview extends JComponent implements Printable {
     public boolean getJesteStampa(){
         return jesteStampa;
     }
+    public void setBrKopija(int brKopija){
+        this.brKopija = brKopija;
+    }   
   }  

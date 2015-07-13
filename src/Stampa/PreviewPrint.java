@@ -23,7 +23,7 @@ public class PreviewPrint {
     int visinaFonta;
     Font font;
     Graphics2D g2D;
-    public void Prikazi(PrikaziPreview prikazi,  Vector pageVector, Graphics g){
+    public void Prikazi(PrikaziPreview prikazi, Vector pageVector, Graphics g){
         font = prikazi.getFont();        
 
         FontMetrics fm = g.getFontMetrics();

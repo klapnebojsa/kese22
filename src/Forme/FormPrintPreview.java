@@ -144,7 +144,10 @@ public class FormPrintPreview extends JFrame implements ActionListener{
                 pj.setPrintable(prikazi, pageFormat);
                 if (pj.printDialog()) {
                     prikazi.setJestStampa(true);
-                    try {pj.print();} catch (PrinterException e1) {}
+                    prikazi.setBrKopija(pj.getCopies());
+                    try {pj.print();                            
+                    } catch (PrinterException e1) {}
+                    prikazi.setBrKopija(1);
                     prikazi.setJestStampa(false);
                 }
                 break;                                  
