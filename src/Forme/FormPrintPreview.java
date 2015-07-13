@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -110,12 +112,11 @@ public class FormPrintPreview extends JFrame implements ActionListener{
                 Mere mere = new Mere();
                 Double preracun = mere.getMmPageFormat() / 10;
                 pageFormat = pj.pageDialog(pageFormat);
-                //Setovanje koordinata, stampaca ... - POLJA IZ MARGINA             
+                //Setovanje koordinata, orijentacije ... - POLJA IZ MARGINA            
                 stampaSetuj.setMLeft((int)(pageFormat.getImageableX() / preracun));
                 stampaSetuj.setMRight((int)((pageFormat.getWidth() - pageFormat.getImageableX() - pageFormat.getImageableWidth() + 0.5) / preracun));                 
                 stampaSetuj.setMTop((int)(pageFormat.getImageableY() / preracun));
                 stampaSetuj.setMDown((int)((pageFormat.getHeight() - pageFormat.getImageableY() - pageFormat.getImageableHeight() + 0.5) / preracun));
-
                 if (prikazi != null) prikazi.pageInit(pageFormat);
                 break;
             case "nextButton":
@@ -131,14 +132,22 @@ public class FormPrintPreview extends JFrame implements ActionListener{
                 if (prikazi != null) prikazi.prvaStrana();
                 break; 
             case "printButton":
+                PrintService[] stampaci = PrinterJob.lookupPrintServices();
+                DocPrintJob docPrintJob = null;
+                
+                for (PrintService printer : stampaci){
+                    if (printer.getName().equalsIgnoreCase(stampaSetuj.getMStampac())) {docPrintJob = printer.createPrintJob(); break;}
+                }
+                try {pj.setPrintService(docPrintJob.getPrintService());
+                } catch (PrinterException ex) { Logger.getLogger(FormPrintPreview.class.getName()).log(Level.SEVERE, null, ex);}
+
                 pj.setPrintable(prikazi, pageFormat);
                 if (pj.printDialog()) {
                     prikazi.setJestStampa(true);
-                    try {pj.print();
-                    } catch (PrinterException e1) {}
+                    try {pj.print();} catch (PrinterException e1) {}
                     prikazi.setJestStampa(false);
                 }
-                break;                 
+                break;                                  
             default:
                 break;
         }

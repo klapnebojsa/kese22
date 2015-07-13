@@ -13,6 +13,7 @@ import Class.Povezivanje.Setuj;
 import Forme.FormForme;
 import Forme.FormPrintPreview;
 import Forme.Konstante.Mere;
+import java.awt.Font;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
@@ -27,6 +28,15 @@ public class StampaSetuj {
     int mRight=25;
     int mTop=25;
     int mDown=25;
+    
+    int medjX=0;
+    int medjY=0;
+    int velFonta=10;
+    String font;
+    String stampac;
+    String formatPapira;
+    String orijentacija;
+    
     List mojeMargine;
     Double preracun;
     
@@ -47,21 +57,37 @@ public class StampaSetuj {
         //Setovanje podataka iz tabele MARGINE
         for(Object category : mojeMargine) {
             List element = (List)category;   
-            mLeft = Integer.parseInt(element.get(1).toString());
-            mRight = Integer.parseInt(element.get(2).toString());          
-            mTop = Integer.parseInt(element.get(3).toString());
-            mDown = Integer.parseInt(element.get(4).toString());
-            
-            
-        }
-        Mere mere = new Mere();
-        preracun = mere.getMmPageFormat() / 10;               
-        pageFormat = pj.defaultPage();
-        Paper paper = pageFormat.getPaper();
-        paper.setImageableArea(mLeft*preracun, mTop*preracun, paper.getWidth()-(mRight+mLeft)*preracun, paper.getHeight()-(mDown+mTop)*preracun);
-        pageFormat.setPaper(paper);
-        formPrintPreview.setPageFormat(pageFormat);
 
+            medjX=Integer.parseInt(element.get(5).toString());
+            medjY=Integer.parseInt(element.get(6).toString());
+            velFonta=Integer.parseInt(element.get(7).toString());
+            
+            font=element.get(8).toString();
+            stampac=element.get(9).toString();
+            formatPapira=element.get(10).toString();
+            orijentacija=element.get(11).toString(); 
+            
+            Mere mere = new Mere();
+            preracun = mere.getMmPageFormat() / 10;  
+            Paper paper = pageFormat.getPaper();              
+            if ( "Uspravno".equals(getMOrijentacija())) {
+                pageFormat.setOrientation(PageFormat.PORTRAIT);
+                mLeft = Integer.parseInt(element.get(1).toString());
+                mRight = Integer.parseInt(element.get(2).toString());          
+                mTop = Integer.parseInt(element.get(3).toString());
+                mDown = Integer.parseInt(element.get(4).toString());
+                paper.setImageableArea(mLeft*preracun, mTop*preracun, paper.getWidth()-(mRight+mLeft)*preracun, paper.getHeight()-(mDown+mTop)*preracun);
+            }else {
+                pageFormat.setOrientation(PageFormat.LANDSCAPE);
+                mLeft = Integer.parseInt(element.get(3).toString());
+                mRight = Integer.parseInt(element.get(4).toString());          
+                mTop = Integer.parseInt(element.get(2).toString());
+                mDown = Integer.parseInt(element.get(1).toString());
+                paper.setImageableArea(mTop*preracun, mRight*preracun, paper.getWidth()-(mTop+mDown)*preracun, paper.getHeight()-(mRight+mLeft)*preracun);
+            }
+            pageFormat.setPaper(paper);
+            formPrintPreview.setPageFormat(pageFormat);            
+        }
         pj.setPrintable(null, pj.defaultPage(pageFormat));
     }
 
@@ -78,7 +104,29 @@ public class StampaSetuj {
     public double getMDown(){
         return mDown*preracun;
     }
-    
+ 
+    public double getMMedjX(){
+        return medjX*preracun;
+    }
+    public double getMMedjY(){
+        return medjY*preracun;
+    }
+    public double getMVelFonta(){
+        return velFonta;
+    }
+    public Font getMFont(){
+        return new Font(font, Font.PLAIN, velFonta);
+    }    
+    public String getMStampac(){
+        return stampac;
+    }     
+    public String getMFormatPapira(PageFormat pageFormat){
+        return formatPapira;
+    }               
+    public String getMOrijentacija(){
+        return orijentacija;
+    }   
+
     //SET IZ FormPrintPreview - kada se promene koordinate
     //Promena nije trajna vec samo za tu odredjenu stampu
     //Ostala polja se ne setuju zato sto se ona menjaju u PRINT FORMI i oni se setuju samo pri ucitavanju iz tabele MARGINE (postoji samo get ali ne i set iz drugr klase)
