@@ -8,16 +8,10 @@ package Forme;
 import Class.DAO.BrokerDAO;
 import Forme.Konstante.FunkcijskiTasteri;
 import Forme.Polja.Prikazi.PoljaIzTabeleDefinicija;
-import Forme.PopUpovi.TablePopUp;
 import Forme.Tabele.MojaTabela;
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Robot;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 
 /**
  *

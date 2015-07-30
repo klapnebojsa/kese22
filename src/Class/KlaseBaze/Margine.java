@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Margine.findByDole", query = "SELECT m FROM Margine m WHERE m.dole = :dole"),
     @NamedQuery(name = "Margine.findByMedjX", query = "SELECT m FROM Margine m WHERE m.medjX = :medjX"),
     @NamedQuery(name = "Margine.findByMedjY", query = "SELECT m FROM Margine m WHERE m.medjY = :medjY"),
+    @NamedQuery(name = "Margine.findByMedjYDw", query = "SELECT m FROM Margine m WHERE m.medjYDw = :medjYDw"),    
     @NamedQuery(name = "Margine.findByVelFonta", query = "SELECT m FROM Margine m WHERE m.velFonta = :velFonta"),
     @NamedQuery(name = "Margine.findByFont", query = "SELECT m FROM Margine m WHERE m.font = :font"),
     @NamedQuery(name = "Margine.findByStampac", query = "SELECT m FROM Margine m WHERE m.stampac = :stampac"),
@@ -61,6 +62,8 @@ public class Margine extends AbstractDAO implements Serializable {
     private Integer medjX;
     @Column(name = "MedjY")
     private Integer medjY;
+    @Column(name = "MedjYDw")
+    private Integer medjYDw;
     @Column(name = "VelFonta")
     private Integer velFonta;
     @Column(name = "Font")
@@ -135,6 +138,14 @@ public class Margine extends AbstractDAO implements Serializable {
         this.medjY = medjY;
     }
 
+    public Integer getMedjYDw() {
+        return medjYDw;
+    }
+
+    public void setMedjYDw(Integer medjYDw) {
+        this.medjYDw = medjYDw;
+    }
+    
     public Integer getVelFonta() {
         return velFonta;
     }
@@ -201,16 +212,16 @@ public class Margine extends AbstractDAO implements Serializable {
     }
 //-----------------------------Deo za ispravku----------------------------------------------------------------------- 
     public String ZaglavljeTabele() { //Opisi polja tabele koji se vide na formi
-        return "Sifra,Margina Levo,Margina Desno,Margina Gore,Margina Dole,Medjuprostor X,Medjuprostor Y,Velicina Fonta,Font,Stampac,Format Papira,Orjentacija";
+        return "Sifra,Margina Levo,Margina Desno,Margina Gore,Margina Dole,Medjuprostor X,Medjuprostor Y,Medjuprostor Y dole,Velicina Fonta,Font,Stampac,Format Papira,Orjentacija";
     }
 
     public String PoljaBaze() { //Polja Baze koja se vide na formi i upisuju se u bazu
-        return "IdMargine,Levo,Desno,Gore,Dole,MedjX,MedjY,VelFonta,Font,Stampac,FormatPapira,Orjentacija";
+        return "IdMargine,Levo,Desno,Gore,Dole,MedjX,MedjY,MedjYDw,VelFonta,Font,Stampac,FormatPapira,Orjentacija";
     }
 
     public String PoljaBazeZaUpis() {  //Id AutoIncrement i ne pominje se inace bi bio naveden tamo gde mu je mesto
         //Navode se sva polja koja se upisuju
-        return "IdMargine,Levo,Desno,Gore,Dole,MedjX,MedjY,VelFonta,Font,Stampac,FormatPapira,Orjentacija";
+        return "IdMargine,Levo,Desno,Gore,Dole,MedjX,MedjY,MedjYDw,VelFonta,Font,Stampac,FormatPapira,Orjentacija";
     }
 
     public String sourClass() {
@@ -250,8 +261,9 @@ public class Margine extends AbstractDAO implements Serializable {
         
         podaci += "Fr@me%20%1%Medjuprostor%New##"; 
         podaci += "&& ";                                        //MedjX        TextField       2
-        podaci += "&& ";                                        //MedjY        TextField       2         
-        podaci += "&&CoBox%%" + elFontVel;                      //VelFonta      ComboBox        3a + 3b
+        podaci += "&& ";                                        //MedjY        TextField       2
+        podaci += "&& ";                                        //MedjYDw      TextField       2        
+        podaci += "&&CoBox%%" + elFontVel;                      //VelFonta     ComboBox        3a + 3b
         
         podaci += "Fr@me%40%1%Parametri%Right##";        
         podaci += "&&CoBox%%" + elFontObl;                      //Font         ComboBox        4a + 4b
@@ -339,14 +351,16 @@ public class Margine extends AbstractDAO implements Serializable {
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 5;}}
         pomoc = provere.proveriInteger(getMedjY(), OpisiPolja[6]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 6;}}
-        pomoc = provere.proveriInteger(getVelFonta(), OpisiPolja[7]);
-        if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 7;}}
-        pomoc = provere.proveriString(getStampac(), OpisiPolja[8]);
+        pomoc = provere.proveriInteger(getMedjYDw(), OpisiPolja[7]);
+        if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 7;}}         
+        pomoc = provere.proveriInteger(getVelFonta(), OpisiPolja[8]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 8;}}
-        pomoc = provere.proveriString(getFormatPapira(), OpisiPolja[9]);
+        pomoc = provere.proveriString(getStampac(), OpisiPolja[9]);
         if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 9;}}
-        pomoc = provere.proveriString(getOrjentacija(), OpisiPolja[10]);
-        if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 10;}}        
+        pomoc = provere.proveriString(getFormatPapira(), OpisiPolja[10]);
+        if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 10;}}
+        pomoc = provere.proveriString(getOrjentacija(), OpisiPolja[11]);
+        if (pomoc != null) {poruka[1] = (poruka[1] == null) ? pomoc : poruka[1] + pomoc; if (poruka[0] == null) { poruka[0] = 11;}}        
 
         return poruka;
     }
@@ -364,6 +378,7 @@ public class Margine extends AbstractDAO implements Serializable {
                 + "Gore="          + gore         + " ,  "
                 + "MedjX="         + medjX        + " ,  "
                 + "MedjY="         + medjY        + " ,  "
+                + "MedjYDw="       + medjYDw      + " ,  "                
                 + "VelFonta="      + velFonta     + " ,  "
                 + "Font='"         + font         + "',  "                
                 + "Stampac='"      + stampac      + "',  "
@@ -379,6 +394,7 @@ public class Margine extends AbstractDAO implements Serializable {
                    + gore         + " ,  "
                    + medjX        + " ,  "
                    + medjY        + " ,  "
+                   + medjYDw      + " ,  "                
                    + velFonta     + " , '"
                    + font         + "', '"                
                    + stampac      + "', '"

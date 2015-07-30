@@ -31,6 +31,7 @@ public class StampaSetuj {
     
     int medjX=0;
     int medjY=0;
+    int medjYDw=0;    
     int velFonta=10;
     String font;
     String stampac;
@@ -60,12 +61,13 @@ public class StampaSetuj {
 
             medjX=Integer.parseInt(element.get(5).toString());
             medjY=Integer.parseInt(element.get(6).toString());
-            velFonta=Integer.parseInt(element.get(7).toString());
+            medjYDw=Integer.parseInt(element.get(7).toString());            
+            velFonta=Integer.parseInt(element.get(8).toString());
             
-            font=element.get(8).toString();
-            stampac=element.get(9).toString();
-            formatPapira=element.get(10).toString();
-            orijentacija=element.get(11).toString(); 
+            font=element.get(9).toString();
+            stampac=element.get(10).toString();
+            formatPapira=element.get(11).toString();
+            orijentacija=element.get(12).toString(); 
             
             Mere mere = new Mere();
             preracun = mere.getMmPageFormat() / 10;  
@@ -110,6 +112,9 @@ public class StampaSetuj {
     }
     public double getMMedjY(){
         return medjY*preracun;
+    }
+    public double getMMedjYDw(){
+        return medjYDw*preracun;
     }
     public double getMVelFonta(){
         return velFonta;

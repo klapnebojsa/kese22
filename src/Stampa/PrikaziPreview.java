@@ -110,25 +110,26 @@ public class PrikaziPreview extends JComponent implements Printable {
     }
     public void pageInit(PageFormat pageFormat) { 
         double medjY = formPrintPreview.stampaSetuj.getMMedjY();
+        double medjYDw = formPrintPreview.stampaSetuj.getMMedjYDw();        
         trenutniRbrStrane = 0;
-        float y = 0;        
+        double y = 0;        
         pageVector = new Vector();
         Vector <PoljeZaStampu> pageXX = new Vector();
         for (int i = 0; i < lineVector.size(); i++) {
-            PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
-            pageXX.addElement(line);
-            
             FontMetric fontMetric = new FontMetric(new Font("Serif", Font.PLAIN, (int)formPrintPreview.stampaSetuj.getMVelFonta()));
             double visina = fontMetric.getVisinaFonta();
             
-            y += visina + medjY;
+            y += visina + medjY + medjYDw;
             //Kontrola kada je nova strana
-            double gg =  pageFormat.getImageableHeight();
-            if (y + (visina+medjY) * 2 > pageFormat.getImageableHeight()) {
-                y = 0;
+            double gg =  pageFormat.getImageableHeight();            
+            if (y + (visina+medjY+medjYDw) * 2 > pageFormat.getImageableHeight()) {
+                y = visina + medjY+medjYDw;
                 pageVector.addElement(pageXX);
                 pageXX = new Vector();
-            }
+            } 
+            
+            PoljeZaStampu line = (PoljeZaStampu) lineVector.elementAt(i);
+            pageXX.addElement(line);
         }
         if (pageXX.size() > 0) pageVector.addElement(pageXX);        
         
